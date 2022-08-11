@@ -27,7 +27,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Task::class); //with policy permition garud // Task::class => any task
+        $this->authorize('create'); //with policy permition garud // Task::class => any task
         return view('tasks.create');
     }
 
