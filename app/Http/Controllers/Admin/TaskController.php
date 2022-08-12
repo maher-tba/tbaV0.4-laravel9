@@ -5,9 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
+
+    public function __construct()
+    {
+        if (Auth::check()) {
+            $this->authorize('admin-access'); //AuthServiceProvider  permission
+        }
+        else{
+            return redirect()->route('login');
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +27,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::with('user')->get();
+        $tasks = Task::with('user');
+//            ->paginate(20);
         return view('admin.tasks.index',compact('tasks'));
     }
 
@@ -26,8 +39,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $this->authorize('admin-access'); //AuthServiceProvider  permission
-        return view('user.tasks.create');
+        //
     }
 
     /**
@@ -38,7 +50,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       //
     }
 
     /**

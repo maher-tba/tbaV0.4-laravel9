@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\User\TaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,21 +28,42 @@ Route::group(['middleware'=> 'auth'], function (){
        'middleware'=>'is_admin',
        'as'=>'admin.',
    ], function (){
-       Route::get('tasks',
-       [\App\Http\Controllers\Admin\TaskController::class,'index'])
-           ->name('tasks.index');
+       Route::get('/sendTask',
+       [\App\Http\Controllers\Admin\TaskController::class,'sendTask'])
+           ->name('tasks.sendTask');
+       Route::resource('tasks', \App\Http\Controllers\Admin\TaskController::class);
+
    });
 
     Route::group([
         'prefix' => 'user',
         'as'=>'user.',
     ], function (){
-        Route::get('tasks',
-            [\App\Http\Controllers\User\TaskController::class,'index'])
-            ->name('tasks.index');
+        Route::resource('tasks', TaskController::class);
     });
-
 });
+//Route::get('/sendTask', [
+//    'uses' => 'TaskController@tasksUser',
+//    'as' => 'tasks.admin',
+//    'middleware' => 'roles',
+//    'roles' => ['Admin']
+//]);
+//
+//Route::post('/tasks','TaskController@store')->name('tasks.store'); // making a post request
+//Route::get('/tasks/{id}/edit','TaskController@edit')->name('tasks.edit');
+//Route::post('/tasks/{id}', 'TaskController@update')->name('tasks.update');
+//Route::get('/tasks','TaskController@index')->name('tasks.index');
+//Route::post('/send/{user}/{author}', 'TaskController@sendMessageToUser')->name('tasks.send');
+
+//Route::group(['middleware'=> 'auth'], function() {
+//    Route::resource('tasks', 'TaskController', [
+//        'only' => [
+//            'index', 'store', 'update','edit'
+//        ]
+//    ]);
+//});
+
+
 
 
 

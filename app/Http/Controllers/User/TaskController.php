@@ -5,10 +5,20 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\DocBlock\Tags\Author;
 
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::check()) {
+            $this->authorize('user-access'); //AuthServiceProvider  permission
+        }
+        else{
+            return redirect()->route('login');
+        }
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +26,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = auth()->user()->tasks;
+        $tasks = auth()->user()->tasks
+            ->sortBy('is_complete')
+            ->sortByDesc('created_at');
+//            ->paginate(20);
         return view('user.tasks.index',compact('tasks'));
     }
 
