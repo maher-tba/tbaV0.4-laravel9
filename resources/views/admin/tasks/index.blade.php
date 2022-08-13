@@ -13,25 +13,30 @@
                     <div class="card-header"> <strong>مهمة جديدة</strong> </div>
 
                     <div class="card-body">
+
                         <form method="POST" action="{{ route('admin.tasks.store') }}">
                             @csrf
-                            <div class="form-group">
-                                <label for="title"> المهمة</label>
-                                <input id="title" name="title" type="text" maxlength="255" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}" autocomplete="off" />
-                                @if ($errors->has('title'))
-                                    <span class="invalid-feedback" role="alert">
+                            <div class="row">
+                                <div class="form-group col-lg-8">
+                                    <label for="title"> المهمة</label>
+                                    <input id="title" name="title" type="text" maxlength="255" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}" autocomplete="off" />
+                                    @if ($errors->has('title'))
+                                        <span class="invalid-feedback" role="alert">
                                     <strong>{{ $errors->first('title') }}</strong>
                                 </span>
-                                @endif
-
+                                    @endif
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="title"> المستخدم</label>
+                                    <select class="form-control" name="user_id" id="user_id">
+                                        @foreach($users as $user)
+                                            <option value="{{ $user->id }}">{{$user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary mt-3">انشاء</button>
-                            {{--                            @if (Auth::user()->hasRole('admin') )--}}
-                            @can('admin-access')
-                                <a class="btn bg-success text-white mt-3" href="{{route('admin.tasks.sendTask')}}" >ارسال مهمة</a>
-
-                            @endcan
-                            {{--                            @endif--}}
+{{--                                <a class="btn bg-success text-white mt-3" href="{{route('admin.tasks.sendTaskToUser',$request->get('user_id'),auth()->user()->name)}}" >ارسال مهمة</a>--}}
                         </form>
                     </div>
                 </div>
@@ -39,38 +44,7 @@
                     <div class="card-header "><strong>المهمات</strong></div>
 
                     <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th class="text-center" scope="col">الناشر</th>
-                                <th class="text-center" scope="col">المهمة</th>
-                                <th class="text-center" scope="col">تم</th>
-                            </tr>
-                            </thead>
-                            @foreach ($tasks as $task)
-                                <tr>
-                                    <td>
-                                        {{ $task->author }}
-                                    </td>
-                                    <td>
-                                        @if ($task->is_complete)
-                                            <s>{{ $task->title }}</s>
-                                        @else
-                                            {{ $task->title }}
-                                        @endif
-                                    </td>
-                                    <td class="text-right">
-                                        @if (! $task->is_complete)
-                                            <form method="POST" action="{{ route('tasks.update', $task->id) }}">
-                                                @csrf
-                                                @method('PUT')
-                                                <button type="submit" class="fabutton"><strong class="bg-success text-white">انجزت المهمة</strong></button>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </table>
+                        <x-tasks-table-admin :users="$users" />
 {{--                        {{ $tasks->links() }}--}}
                     </div>
                 </div>

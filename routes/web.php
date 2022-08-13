@@ -28,9 +28,9 @@ Route::group(['middleware'=> 'auth'], function (){
        'middleware'=>'is_admin',
        'as'=>'admin.',
    ], function (){
-       Route::get('/sendTask',
-       [\App\Http\Controllers\Admin\TaskController::class,'sendTask'])
-           ->name('tasks.sendTask');
+       Route::get('/sendTaskToUser',
+       [\App\Http\Controllers\Admin\TaskController::class,'sendTaskToUser'])
+           ->name('tasks.sendTaskToUser');
        Route::resource('tasks', \App\Http\Controllers\Admin\TaskController::class);
 
    });

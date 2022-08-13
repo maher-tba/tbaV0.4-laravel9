@@ -25,10 +25,10 @@ class TaskPolicy
         return $user->is_admin;
     }
     public function update(User $user, Task $task){
-        return in_array($user->role_id,[Role::IS_ADMIN,Role::IS_USER,Role::IS_MANAGER]) || (auth()->check() && $task->user_id == auth()->id()) ; // we can user edit tasks belong of him
+        return in_array($user->role_id,[Role::IS_ADMIN,Role::IS_MANAGER]) || (auth()->check() && $task->author == auth()->user()->name) ; // we can user edit tasks belong of him
     }
 
     public function delete(User $user, Task $task){
-        return $user->is_admin || $task->user_id == auth()->id();
+        return  $user->role == Role::IS_ADMIN || (auth()->check() && $task->author == auth()->user()->name) ;;
     }
 }

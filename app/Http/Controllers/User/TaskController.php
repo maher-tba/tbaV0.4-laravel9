@@ -12,12 +12,7 @@ class TaskController extends Controller
 {
     public function __construct()
     {
-        if (Auth::check()) {
-            $this->authorize('user-access'); //AuthServiceProvider  permission
-        }
-        else{
-            return redirect()->route('login');
-        }
+        //
     }
     /**
      * Display a listing of the resource.
@@ -26,9 +21,9 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = auth()->user()->tasks
-            ->sortBy('is_complete')
-            ->sortByDesc('created_at');
+        $tasks = Task::where('user_id','=', auth()->user()->id)->with('user')
+            ->orderBy('is_complete')
+            ->orderByDesc('created_at')->get();
 //            ->paginate(20);
         return view('user.tasks.index',compact('tasks'));
     }
@@ -40,8 +35,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $this->authorize('create'); //with policy permition garud // Task::class => any task
-        return view('tasks.create');
+        //
     }
 
     /**
@@ -52,7 +46,23 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate the given request
+        $data = $this->validate($request, [
+            'title' => 'required|string|max:255',
+        ]);
+
+        // create a new incomplete task with the given title
+        Auth::user()->tasks()->create([
+            'title' => $data['title'],
+            'is_complete' => false,
+            'author' => Auth::user()->name,
+        ]);
+
+        // flash a success message to the session
+        session()->flash('status', 'Task Created!');
+
+        // redirect to tasks index
+        return redirect('user/tasks');
     }
 
     /**
