@@ -15,7 +15,7 @@
 
                     <div class="card-body">
                         <x-tasks-table-user :tasks="$tasks"/>
-{{--                    {{ $tasks->links() }}--}}
+                    {{ $tasks->links() }}
                     </div>
                 </div>
             </div>
