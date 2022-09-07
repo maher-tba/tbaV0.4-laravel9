@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\DocBlock\Tags\Author;
 
-class CategoryController extends Controller
+class TaskController extends Controller
 {
     public function __construct()
     {
@@ -21,11 +21,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $Categories = Category::where('user_id','=', auth()->user()->id)->with('user')->paginate(4);
-//            ->orderBy('is_hidden')
+        $tasks = Task::where('user_id','=', auth()->user()->id)->with('user')->paginate(4);
+//            ->orderBy('is_complete')
 //            ->orderByDesc('created_at')->get();
 //            ->paginate(20);
-        return view('user.Categories.index',compact('Categories'));
+        return view('user.tasks.index',compact('tasks'));
     }
 
     /**
@@ -51,27 +51,27 @@ class CategoryController extends Controller
             'title' => 'required|string|max:255',
         ]);
 
-        // // create a new inhidden Category with the given title
-        // Auth::user()->categories()->create([
-        //     'title' => $data['title'],
-        //     'is_hidden' => false,
-        //     'author' => Auth::user()->name,
-        // ]);
+        // create a new incomplete task with the given title
+        Auth::user()->tasks()->create([
+            'title' => $data['title'],
+            'is_complete' => false,
+            'author' => Auth::user()->name,
+        ]);
 
         // flash a success message to the session
-        session()->flash('status', 'Category Created!');
+        session()->flash('status', 'Task Created!');
 
-        // redirect to Categories index
-        return redirect('user/Categories');
+        // redirect to tasks index
+        return redirect('user/tasks');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $Category
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $Category)
+    public function show(Task $task)
     {
         //
     }
@@ -79,23 +79,23 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Category  $Category
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $Category)
+    public function edit(Task $task)
     {
-        $this->authorize('create', $Category); //with policy permition garud // $Category => specific Category
-        return view('Categories.create');
+        $this->authorize('create', $task); //with policy permition garud // $task => specific task
+        return view('tasks.create');
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $Category
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $Category)
+    public function update(Request $request, Task $task)
     {
         //
     }
@@ -103,10 +103,10 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $Category
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $Category)
+    public function destroy(Task $task)
     {
         //
     }
